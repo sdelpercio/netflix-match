@@ -23,12 +23,8 @@ function App() {
         <Match />
       </Route>
       <Route exact path="/">
-        <Link to="/create-code">
-          <button>Start Matching!</button>
-        </Link>
-        <Link to="/enter-code">
-          <button>Enter A Code</button>
-        </Link>
+        <Link to="/create-code">Start Matching!</Link>
+        <Link to="/enter-code">Enter A Code</Link>
       </Route>
       <Route path="*">
         <h1>Sorry, there's nothing here...</h1>

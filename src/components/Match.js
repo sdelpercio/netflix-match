@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 
 const Match = () => {
+  let match = useRouteMatch();
+
   const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
 
   const [genres, setGenres] = useState([]);
+  const [userGenres, setUserGenres] = useState({});
+
+  const toggleGenre = (netflixid) => {
+    // add/remove genres to search
+    console.log(genres);
+  };
 
   // Getting Genres
   useEffect(() => {
@@ -21,24 +30,53 @@ const Match = () => {
       .request(options)
       .then((res) => {
         console.log(res.data);
-        setGenres(res.data.results);
+        setGenres({});
+        res.data.results.map((item) =>
+          setGenres((prevState) => ({
+            ...prevState,
+            [item.netflixid]: {
+              genre: item.genre,
+              id: item.netflixid,
+              selected: false,
+            },
+          }))
+        );
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [rapidApiKey]);
 
   return (
-    <div>
-      <h1>Choose your Genres</h1>
-      {genres.length === 0 ? (
-        <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24" />
-      ) : (
-        genres.map((item) => {
-          return <button key={item.netflixid}>{item.genre}</button>;
-        })
-      )}
-    </div>
+    <Switch>
+      <Route path={`${match.path}/movies`}>
+        <h1>movies</h1>
+      </Route>
+      <Route path={`${match.path}/genres`}>
+        <div>
+          <h1>Choose your Genres</h1>
+          {genres === {} ? (
+            <div className="bg-black h-16 w-16 animate-pulse"></div>
+          ) : (
+            Object.entries(genres).map(([key, value]) => (
+              <button
+                key={key}
+                value={value}
+                className={
+                  value.selected
+                    ? "bg-black text-white rounded-full"
+                    : "bg-white text-gray-600 rounded-full"
+                }
+                onClick={(e) => toggleGenre(value.id)}
+              >
+                {value.genre}
+              </button>
+            ))
+          )}
+          <Link to={`${match.url}/movies`}>Continue</Link>
+        </div>
+      </Route>
+    </Switch>
   );
 };
 export default Match;
