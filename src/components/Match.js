@@ -9,10 +9,13 @@ import {
 import axios from "axios";
 import io from "socket.io-client";
 
+let socket;
+
 const Match = () => {
   const slug = useParams();
   const match = useRouteMatch();
   const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
+  const socketEndPoint = "localhost:5000";
 
   const [genres, setGenres] = useState([]);
   const [userGenres, setUserGenres] = useState({});
@@ -57,8 +60,16 @@ const Match = () => {
   // }, [rapidApiKey]);
 
   useEffect(() => {
-    console.log("slug", name, room);
-  });
+    socket = io(socketEndPoint);
+
+    socket.emit("join", { name, room }, () => {});
+
+    return () => {
+      socket.emit("disconnect");
+
+      socket.off();
+    };
+  }, [socketEndPoint, name, room]);
 
   return (
     <Switch>
