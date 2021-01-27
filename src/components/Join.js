@@ -22,7 +22,7 @@ const Join = () => {
       />
       <Link
         onClick={(e) => (!name || !room ? e.preventDefault() : null)}
-        to={`/match/${name}/${room}`}
+        to={`/match/${name}/${room}/genres`}
       >
         <button type="submit">Join</button>
       </Link>
