@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 
-const MatchGenres = ({ genres, userGenres, toggleGenre, submitGenres }) => {
+const MatchGenres = ({
+  genres,
+  rapidApiKey,
+  setGenres,
+  userGenres,
+  toggleGenre,
+  submitGenres,
+}) => {
+  // Get Genres from Netflix API
+  useEffect(() => {
+    const options = {
+      method: "GET",
+      url: "https://unogsng.p.rapidapi.com/genres",
+      headers: {
+        "x-rapidapi-key": rapidApiKey,
+        "x-rapidapi-host": "unogsng.p.rapidapi.com",
+      },
+    };
+
+    axios
+      .request(options)
+      .then((res) => {
+        setGenres([]);
+        res.data.results.map((item) =>
+          setGenres((prevState) => [
+            ...prevState,
+            {
+              genre: item.genre,
+              netflixid: item.netflixid,
+              selected: false,
+            },
+          ])
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [rapidApiKey, genres, setGenres]);
+
   return (
     <div>
       <h1>Choose your Genres</h1>

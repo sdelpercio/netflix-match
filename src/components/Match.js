@@ -55,40 +55,6 @@ const Match = () => {
   //                           //
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
-  // Get Genres from Netflix API
-  // *** Move into MatchGenres.js
-  useEffect(() => {
-    if (genres === []) {
-      const options = {
-        method: "GET",
-        url: "https://unogsng.p.rapidapi.com/genres",
-        headers: {
-          "x-rapidapi-key": rapidApiKey,
-          "x-rapidapi-host": "unogsng.p.rapidapi.com",
-        },
-      };
-
-      axios
-        .request(options)
-        .then((res) => {
-          setGenres([]);
-          res.data.results.map((item) =>
-            setGenres((prevState) => [
-              ...prevState,
-              {
-                genre: item.genre,
-                netflixid: item.netflixid,
-                selected: false,
-              },
-            ])
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [rapidApiKey, genres]);
-
   // Update Genres
   const toggleGenre = (netflixid) => {
     const genreIndex = userGenres.indexOf(netflixid);
@@ -119,44 +85,6 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
-  // Get Movies from Netflix API
-  // *** Move into MatchMovies.js
-  useEffect(() => {
-    if (movies === []) {
-      const genresString = userGenres.join(", ");
-
-      const options = {
-        method: "GET",
-        url: "https://unogsng.p.rapidapi.com/search",
-        params: {
-          genrelist: genresString,
-          start_year: "1972",
-          orderby: "rating",
-          audiosubtitle_andor: "and",
-          limit: "100",
-          subtitle: "english",
-          countrylist: "78,46",
-          audio: "english",
-          country_andorunique: "unique",
-          offset: "0",
-          end_year: "2019",
-        },
-        headers: {
-          "x-rapidapi-key": rapidApiKey,
-          "x-rapidapi-host": "unogsng.p.rapidapi.com",
-        },
-      };
-
-      axios
-        .request(options)
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    }
-  }, [rapidApiKey, userGenres, movies]);
 
   return (
     <Switch>
@@ -166,9 +94,11 @@ const Match = () => {
       <Route path={`${match.path}/genres`}>
         <MatchGenres
           genres={genres}
+          setGenres={setGenres}
           userGenres={userGenres}
           toggleGenre={toggleGenre}
           submitGenres={submitGenres}
+          rapidApiKey={rapidApiKey}
         />
       </Route>
     </Switch>
