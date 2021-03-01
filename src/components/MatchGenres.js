@@ -38,7 +38,7 @@ const MatchGenres = ({
       .catch((err) => {
         console.log(err);
       });
-  }, [rapidApiKey, genres, setGenres]);
+  }, []);
 
   return (
     <div>
@@ -49,12 +49,8 @@ const MatchGenres = ({
         genres.map((item) => (
           <button
             key={item.netflixid}
-            className={
-              userGenres.includes(item.netflixid)
-                ? "bg-black text-white rounded-full"
-                : "bg-white text-gray-600 rounded-full"
-            }
-            onClick={(e) => toggleGenre(item.netflixid)}
+            style={{ backgroundColor: "white", color: "black" }}
+            onClick={(e) => toggleGenre(e, item.netflixid)}
           >
             {item.genre}
           </button>

@@ -1,7 +1,15 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 
-const MatchMovies = ({ movies, userGenres, rapidApiKey }) => {
+const MatchMovies = ({
+  movies,
+  setMovies,
+  userMovies,
+  toggleMovies,
+  submitMovies,
+  userGenres,
+  rapidApiKey,
+}) => {
   // Get Movies from Netflix API
   useEffect(() => {
     const genresString = userGenres.join(", ");
@@ -16,7 +24,7 @@ const MatchMovies = ({ movies, userGenres, rapidApiKey }) => {
         audiosubtitle_andor: "and",
         limit: "100",
         subtitle: "english",
-        countrylist: "78,46",
+        countrylist: "46",
         audio: "english",
         country_andorunique: "unique",
         offset: "0",
@@ -30,17 +38,49 @@ const MatchMovies = ({ movies, userGenres, rapidApiKey }) => {
 
     axios
       .request(options)
-      .then(function (response) {
-        console.log(response.data);
+      .then((res) => {
+        setMovies([]);
+        res.data.results.map((item) =>
+          setMovies((prevState) => [
+            ...prevState,
+            {
+              id: item.id,
+              netflixid: item.nfid,
+              avgRating: item.avgrating,
+              imdbRating: item.imdbrating,
+              imgSrc: item.poster,
+              runtime: item.runtime,
+              synopsis: item.synopsis,
+              title: item.title,
+              yearReleased: item.year,
+              type: item.vtype,
+              selected: false,
+            },
+          ])
+        );
       })
-      .catch(function (error) {
-        console.error(error);
+      .catch((err) => {
+        console.log(err);
       });
-  }, [rapidApiKey, userGenres, movies]);
+  }, []);
 
   return (
     <div>
-      <h1>movies</h1>
+      <h1>Choose your Genres</h1>
+      {movies.length === 0 ? (
+        <div className="bg-black h-16 w-16 animate-pulse"></div>
+      ) : (
+        movies.map((item) => (
+          <button
+            key={item.netflixid}
+            style={{ backgroundColor: "white", color: "black" }}
+            onClick={(e) => toggleMovies(e, item.netflixid)}
+          >
+            {item.genre}
+          </button>
+        ))
+      )}
+      <button onClick={(e) => submitMovies(e)}>Continue</button>
     </div>
   );
 };
