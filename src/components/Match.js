@@ -6,7 +6,6 @@ import {
   useRouteMatch,
   useParams,
 } from "react-router-dom";
-import axios from "axios";
 import io from "socket.io-client";
 // components
 import MatchGenres from "./MatchGenres";
@@ -56,27 +55,30 @@ const Match = () => {
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
   // Update Genres
-  const toggleGenre = (netflixid) => {
-    const genreIndex = userGenres.indexOf(netflixid);
+  const toggleGenre = (e, netflixid) => {
+    e.target.style.backgroundColor = "white" ? "black" : "white";
+    e.target.style.color = "black" ? "white" : "black";
 
+    const genreIndex = userGenres.indexOf(netflixid);
     if (genreIndex === -1) {
       setUserGenres([...userGenres, netflixid]);
     } else {
       setUserGenres((prevState) => prevState.filter((id) => id !== netflixid));
     }
-
     socket.emit("updateGenres", netflixid);
   };
 
   // Submit Genres
   const submitGenres = (e) => {
     e.preventDefault();
+    console.log("submitted genres");
     socket.emit("getGenres");
   };
 
   // Receive Genres After Submission
   useEffect(() => {
     socket.on("receiveGenres", (receivedGenres) => {
+      console.log("received genres:", receivedGenres);
       setUserGenres(receivedGenres);
       history.push(`${match.path}/movies`);
     });
@@ -85,11 +87,19 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
+  // Create toggle movies function
+  // Create submit movies function
 
   return (
     <Switch>
       <Route path={`${match.path}/movies`}>
-        <MatchMovies />
+        <MatchMovies
+          movies={movies}
+          setMovies={setMovies}
+          userMovies={userMovies}
+          userGenres={userGenres}
+          rapidApiKey={rapidApiKey}
+        />
       </Route>
       <Route path={`${match.path}/genres`}>
         <MatchGenres
