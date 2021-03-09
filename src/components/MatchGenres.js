@@ -5,7 +5,6 @@ const MatchGenres = ({
   genres,
   rapidApiKey,
   setGenres,
-  userGenres,
   toggleGenre,
   submitGenres,
 }) => {
@@ -41,7 +40,7 @@ const MatchGenres = ({
   }, []);
 
   return (
-    <div>
+    <div className="m-auto mt-20 w-80 md:w-1/2">
       <h1>Choose your Genres</h1>
       {genres.length === 0 ? (
         <div className="bg-black h-16 w-16 animate-pulse"></div>
