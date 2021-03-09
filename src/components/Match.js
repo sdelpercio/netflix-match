@@ -56,8 +56,16 @@ const Match = () => {
   //                           //
   // Update Genres
   const toggleGenre = (e, netflixid) => {
-    e.target.style.backgroundColor = "white" ? "black" : "white";
-    e.target.style.color = "black" ? "white" : "black";
+    if (e.target.style.backgroundColor === "white") {
+      e.target.style.backgroundColor = "black";
+    } else {
+      e.target.style.backgroundColor = "white";
+    }
+    if (e.target.style.color === "black") {
+      e.target.style.color = "white";
+    } else {
+      e.target.style.color = "black";
+    }
 
     const genreIndex = userGenres.indexOf(netflixid);
     if (genreIndex === -1) {
@@ -105,7 +113,6 @@ const Match = () => {
         <MatchGenres
           genres={genres}
           setGenres={setGenres}
-          userGenres={userGenres}
           toggleGenre={toggleGenre}
           submitGenres={submitGenres}
           rapidApiKey={rapidApiKey}
