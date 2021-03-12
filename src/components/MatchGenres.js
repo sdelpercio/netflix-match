@@ -12,32 +12,19 @@ const MatchGenres = ({
   useEffect(() => {
     const options = {
       method: "GET",
-      url: "https://unogsng.p.rapidapi.com/genres",
-      headers: {
-        "x-rapidapi-key": rapidApiKey,
-        "x-rapidapi-host": "unogsng.p.rapidapi.com",
-      },
+      url: `https://api.themoviedb.org/3/genre/movie/list?api_key=${rapidApiKey}&language=en-US`,
     };
 
     axios
       .request(options)
       .then((res) => {
         setGenres([]);
-        res.data.results.map((item) =>
-          setGenres((prevState) => [
-            ...prevState,
-            {
-              genre: item.genre,
-              netflixid: item.netflixid,
-              selected: false,
-            },
-          ])
-        );
+        setGenres(res.data.genres);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [rapidApiKey, setGenres]);
 
   return (
     <div className="m-auto mt-20 w-80 md:w-1/2">
@@ -46,13 +33,13 @@ const MatchGenres = ({
         <div className="bg-black h-16 w-16 animate-pulse"></div>
       ) : (
         genres.map((item) => (
-          <button
-            key={item.netflixid}
+          <div
+            key={item.id}
             style={{ backgroundColor: "white", color: "black" }}
-            onClick={(e) => toggleGenre(e, item.netflixid)}
+            onClick={(e) => toggleGenre(e, item.id)}
           >
-            {item.genre}
-          </button>
+            {item.name}
+          </div>
         ))
       )}
       <button onClick={(e) => submitGenres(e)}>Continue</button>
