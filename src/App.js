@@ -14,7 +14,7 @@ function App() {
           Netflix Match
         </span>
       </header>
-      <content className="flex-grow">
+      <div className="flex-grow">
         <Switch>
           <Route path="/match/:name/:room" component={Match} />
           <Route exact path="/" component={Join} />
@@ -22,7 +22,7 @@ function App() {
             <h1>Sorry, there's nothing here...</h1>
           </Route>
         </Switch>
-      </content>
+      </div>
       <footer className="flex flex-col justify-between items-center m-auto">
         <p className="text-xs text-center md:text-base w-4/5 md:w-full">
           This product uses the TMDb API but is not endorsed or certified by

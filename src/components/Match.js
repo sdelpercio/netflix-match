@@ -16,7 +16,7 @@ let socket;
 const Match = () => {
   const slug = useParams();
   const match = useRouteMatch();
-  const rapidApiKey = process.env.REACT_APP_RAPID_API_KEY;
+  const rapidApiKey = process.env.REACT_APP_API_KEY;
   const socketEndPoint = "localhost:5000";
   let history = useHistory();
 
