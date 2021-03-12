@@ -55,7 +55,7 @@ const Match = () => {
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
   // Update Genres
-  const toggleGenre = (e, netflixid) => {
+  const toggleGenre = (e, id) => {
     if (e.target.style.backgroundColor === "white") {
       e.target.style.backgroundColor = "black";
     } else {
@@ -67,13 +67,15 @@ const Match = () => {
       e.target.style.color = "black";
     }
 
-    const genreIndex = userGenres.indexOf(netflixid);
+    const genreIndex = userGenres.indexOf(id);
     if (genreIndex === -1) {
-      setUserGenres([...userGenres, netflixid]);
+      setUserGenres([...userGenres, id]);
     } else {
-      setUserGenres((prevState) => prevState.filter((id) => id !== netflixid));
+      setUserGenres((prevState) =>
+        prevState.filter((prev_id) => id !== prev_id)
+      );
     }
-    socket.emit("updateGenres", netflixid);
+    socket.emit("updateGenres", id);
   };
 
   // Submit Genres
