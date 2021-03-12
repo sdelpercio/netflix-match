@@ -19,9 +19,7 @@ const MatchGenres = ({
       .request(options)
       .then((res) => {
         setGenres([]);
-        console.log("genre response:", res);
         setGenres(res.data.genres);
-        console.log("genres:", genres);
       })
       .catch((err) => {
         console.log(err);
