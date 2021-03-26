@@ -40,7 +40,7 @@ const Match = () => {
     return () => {
       socket.emit("endConnection", room);
 
-      socket.off();
+      socket.close();
     };
   }, [socketEndPoint, name, room]);
 
@@ -54,7 +54,7 @@ const Match = () => {
   //                           //
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
-  // Update Genres
+  // Toggle Genres
   const toggleGenre = (e, id) => {
     if (e.target.style.backgroundColor === "white") {
       e.target.style.backgroundColor = "black";
@@ -97,8 +97,30 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
-  // Create toggle movies function
-  // Create submit movies function
+  // Toggle Movies
+  const toggleMovies = (e, id) => {
+    if (e.target.style.backgroundColor === "white") {
+      e.target.style.backgroundColor = "black";
+    } else {
+      e.target.style.backgroundColor = "white";
+    }
+    if (e.target.style.color === "black") {
+      e.target.style.color = "white";
+    } else {
+      e.target.style.color = "black";
+    }
+
+    const movieIndex = userMovies.indexOf(id);
+    if (movieIndex === -1) {
+      setUserMovies([...userMovies, id]);
+    } else {
+      setUserMovies((prevState) =>
+        prevState.filter((prev_id) => id !== prev_id)
+      );
+    }
+    socket.emit("updateMovies", id);
+  };
+  // Submit Movies
 
   return (
     <Switch>
@@ -106,6 +128,7 @@ const Match = () => {
         <MatchMovies
           movies={movies}
           setMovies={setMovies}
+          toggleMovies={toggleMovies}
           userMovies={userMovies}
           userGenres={userGenres}
           rapidApiKey={rapidApiKey}
