@@ -40,7 +40,7 @@ const Match = () => {
     return () => {
       socket.emit("endConnection", room);
 
-      socket.off();
+      socket.close();
     };
   }, [socketEndPoint, name, room]);
 
@@ -54,7 +54,7 @@ const Match = () => {
   //                           //
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
-  // Update Genres
+  // Toggle Genres
   const toggleGenre = (e, id) => {
     if (e.target.style.backgroundColor === "white") {
       e.target.style.backgroundColor = "black";
@@ -69,7 +69,7 @@ const Match = () => {
 
     const genreIndex = userGenres.indexOf(id);
     if (genreIndex === -1) {
-      setUserGenres([...userGenres, id]);
+      setUserGenres((prevState) => [...prevState, id]);
     } else {
       setUserGenres((prevState) =>
         prevState.filter((prev_id) => id !== prev_id)
@@ -77,18 +77,14 @@ const Match = () => {
     }
     socket.emit("updateGenres", id);
   };
-
   // Submit Genres
   const submitGenres = (e) => {
     e.preventDefault();
-    console.log("submitted genres");
     socket.emit("getGenres");
   };
-
   // Receive Genres After Submission
   useEffect(() => {
     socket.on("receiveGenres", (receivedGenres) => {
-      console.log("received genres:", receivedGenres);
       setUserGenres(receivedGenres);
       history.push(`${match.path}/movies`);
     });
@@ -97,8 +93,37 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
-  // Create toggle movies function
-  // Create submit movies function
+  // Toggle Movies
+  const toggleMovies = (e, id) => {
+    if (e.target.style.border === "2px solid black") {
+      e.target.style.border = "2px solid green";
+    } else {
+      e.target.style.border = "2px solid black";
+    }
+
+    const movieIndex = userMovies.indexOf(id);
+    if (movieIndex === -1) {
+      setUserMovies((prevState) => [...prevState, id]);
+      socket.emit("addMovies", id);
+    } else {
+      setUserMovies((prevState) =>
+        prevState.filter((prev_id) => id !== prev_id)
+      );
+      socket.emit("removeMovies", id);
+    }
+  };
+  // Submit Movies
+  const submitMovies = (e) => {
+    e.preventDefault();
+    socket.emit("getMovies");
+  };
+  // Receive Movies After Submission
+  useEffect(() => {
+    socket.on("receiveMovies", (receivedMovies) => {
+      console.log("received movies:", receivedMovies);
+      setUserMovies(receivedMovies);
+    });
+  }, []);
 
   return (
     <Switch>
@@ -106,7 +131,8 @@ const Match = () => {
         <MatchMovies
           movies={movies}
           setMovies={setMovies}
-          userMovies={userMovies}
+          toggleMovies={toggleMovies}
+          submitMovies={submitMovies}
           userGenres={userGenres}
           rapidApiKey={rapidApiKey}
         />
