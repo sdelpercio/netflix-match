@@ -69,7 +69,7 @@ const Match = () => {
 
     const genreIndex = userGenres.indexOf(id);
     if (genreIndex === -1) {
-      setUserGenres([...userGenres, id]);
+      setUserGenres((prevState) => [...prevState, id]);
     } else {
       setUserGenres((prevState) =>
         prevState.filter((prev_id) => id !== prev_id)
@@ -77,18 +77,14 @@ const Match = () => {
     }
     socket.emit("updateGenres", id);
   };
-
   // Submit Genres
   const submitGenres = (e) => {
     e.preventDefault();
-    console.log("submitted genres");
     socket.emit("getGenres");
   };
-
   // Receive Genres After Submission
   useEffect(() => {
     socket.on("receiveGenres", (receivedGenres) => {
-      console.log("received genres:", receivedGenres);
       setUserGenres(receivedGenres);
       history.push(`${match.path}/movies`);
     });
@@ -99,28 +95,35 @@ const Match = () => {
   //                           //
   // Toggle Movies
   const toggleMovies = (e, id) => {
-    if (e.target.style.backgroundColor === "white") {
-      e.target.style.backgroundColor = "black";
+    if (e.target.style.border === "2px solid black") {
+      e.target.style.border = "2px solid green";
     } else {
-      e.target.style.backgroundColor = "white";
-    }
-    if (e.target.style.color === "black") {
-      e.target.style.color = "white";
-    } else {
-      e.target.style.color = "black";
+      e.target.style.border = "2px solid black";
     }
 
     const movieIndex = userMovies.indexOf(id);
     if (movieIndex === -1) {
-      setUserMovies([...userMovies, id]);
+      setUserMovies((prevState) => [...prevState, id]);
+      socket.emit("addMovies", id);
     } else {
       setUserMovies((prevState) =>
         prevState.filter((prev_id) => id !== prev_id)
       );
+      socket.emit("removeMovies", id);
     }
-    socket.emit("updateMovies", id);
   };
   // Submit Movies
+  const submitMovies = (e) => {
+    e.preventDefault();
+    socket.emit("getMovies");
+  };
+  // Receive Movies After Submission
+  useEffect(() => {
+    socket.on("receiveMovies", (receivedMovies) => {
+      console.log("received movies:", receivedMovies);
+      setUserMovies(receivedMovies);
+    });
+  }, []);
 
   return (
     <Switch>
@@ -129,7 +132,7 @@ const Match = () => {
           movies={movies}
           setMovies={setMovies}
           toggleMovies={toggleMovies}
-          userMovies={userMovies}
+          submitMovies={submitMovies}
           userGenres={userGenres}
           rapidApiKey={rapidApiKey}
         />

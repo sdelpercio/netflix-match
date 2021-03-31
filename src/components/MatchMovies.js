@@ -4,7 +4,6 @@ import axios from "axios";
 const MatchMovies = ({
   movies,
   setMovies,
-  userMovies,
   toggleMovies,
   submitMovies,
   userGenres,
@@ -49,15 +48,13 @@ const MatchMovies = ({
         <div className="bg-black h-16 w-16 animate-pulse"></div>
       ) : (
         movies.map((item) => (
-          <div
-            key={item.id}
-            style={{ backgroundColor: "white", color: "black" }}
-            onClick={(e) => toggleMovies(e, item.id)}
-          >
+          <div key={item.id}>
             <h1>{item.title}</h1>
             <img
-              src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`}
+              src={`https://image.tmdb.org/t/p/w300/${item.poster_path}`}
               alt="movie poster"
+              style={{ border: "2px solid black" }}
+              onClick={(e) => toggleMovies(e, item.id)}
             />
             <p>{item.overview}</p>
             <div>
