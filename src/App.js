@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 // components
 import Join from "./components/Join";
 import Match from "./components/Match";
@@ -7,10 +7,18 @@ import Match from "./components/Match";
 import logo from "./media/tmdb-logo.svg";
 
 function App() {
+  let history = useHistory();
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="text-5xl md:text-8xl font-black flex justify-center">
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-black">
+        <span
+          onClick={(e) => {
+            e.preventDefault();
+            history.push("/");
+          }}
+          className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-black cursor-pointer"
+        >
           Netflix Match
         </span>
       </header>

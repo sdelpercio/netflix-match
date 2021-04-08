@@ -10,6 +10,7 @@ import io from "socket.io-client";
 // components
 import MatchGenres from "./MatchGenres";
 import MatchMovies from "./MatchMovies";
+import Result from "./Result";
 
 let socket;
 
@@ -122,8 +123,9 @@ const Match = () => {
     socket.on("receiveMovies", (receivedMovies) => {
       console.log("received movies:", receivedMovies);
       setUserMovies(receivedMovies);
+      history.push(`${match.path}/result`);
     });
-  }, []);
+  }, [history, match.path]);
 
   return (
     <Switch>
@@ -145,6 +147,9 @@ const Match = () => {
           submitGenres={submitGenres}
           rapidApiKey={rapidApiKey}
         />
+      </Route>
+      <Route path={`${match.path}/result`}>
+        <Result userMovies={userMovies} />
       </Route>
     </Switch>
   );
