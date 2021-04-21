@@ -7,6 +7,7 @@ import {
   useParams,
 } from "react-router-dom";
 import io from "socket.io-client";
+import swal from "@sweetalert/with-react";
 // components
 import MatchGenres from "./MatchGenres";
 import MatchMovies from "./MatchMovies";
@@ -15,6 +16,7 @@ import Result from "./Result";
 let socket;
 
 const Match = () => {
+  // UTILS
   const slug = useParams();
   const match = useRouteMatch();
   const rapidApiKey = process.env.REACT_APP_API_KEY;
@@ -48,7 +50,11 @@ const Match = () => {
   // Other Users Joining Room
   useEffect(() => {
     socket.on("message", (message) => {
-      alert(message.text);
+      swal({
+        content: <div>{message.text}</div>,
+        icon: "info",
+        button: "OK!",
+      });
     });
   }, []);
 
@@ -81,7 +87,18 @@ const Match = () => {
   // Submit Genres
   const submitGenres = (e) => {
     e.preventDefault();
-    socket.emit("getGenres");
+
+    swal({
+      title: "Are you sure?",
+      text:
+        "Once you continue, the whole room will move forward with everyone's currently chosen genres.",
+      icon: "warning",
+      buttons: true,
+    }).then((willContinue) => {
+      if (willContinue) {
+        socket.emit("getGenres");
+      }
+    });
   };
   // Receive Genres After Submission
   useEffect(() => {
@@ -116,7 +133,18 @@ const Match = () => {
   // Submit Movies
   const submitMovies = (e) => {
     e.preventDefault();
-    socket.emit("getMovies");
+
+    swal({
+      title: "Are you sure?",
+      text:
+        "Once you continue, matches will be found based on everyone's current selections.",
+      icon: "warning",
+      buttons: true,
+    }).then((willContinue) => {
+      if (willContinue) {
+        socket.emit("getMovies");
+      }
+    });
   };
   // Receive Movies After Submission
   useEffect(() => {
