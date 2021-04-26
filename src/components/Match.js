@@ -18,7 +18,6 @@ let socket;
 const Match = () => {
   // UTILS
   const slug = useParams();
-  const match = useRouteMatch();
   const rapidApiKey = process.env.REACT_APP_API_KEY;
   const socketEndPoint = "localhost:5000";
   let history = useHistory();
@@ -104,9 +103,9 @@ const Match = () => {
   useEffect(() => {
     socket.on("receiveGenres", (receivedGenres) => {
       setUserGenres(receivedGenres);
-      history.push(`${match.path}/movies`);
+      history.push(`/match/${slug.name}/${slug.room}/movies`);
     });
-  }, [history, match.path]);
+  }, [history, slug.name, slug.room]);
 
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
@@ -151,13 +150,13 @@ const Match = () => {
     socket.on("receiveMovies", (receivedMovies) => {
       console.log("received movies:", receivedMovies);
       setUserMovies(receivedMovies);
-      history.push(`${match.path}/result`);
+      history.push(`/match/${slug.name}/${slug.room}/result`);
     });
-  }, [history, match.path]);
+  }, [history, slug.name, slug.room]);
 
   return (
     <Switch>
-      <Route path={`${match.path}/movies`}>
+      <Route path={`/match/${slug.name}/${slug.room}/movies`}>
         <MatchMovies
           movies={movies}
           setMovies={setMovies}
@@ -167,7 +166,7 @@ const Match = () => {
           rapidApiKey={rapidApiKey}
         />
       </Route>
-      <Route path={`${match.path}/genres`}>
+      <Route path={`/match/${slug.name}/${slug.room}/genres`}>
         <MatchGenres
           genres={genres}
           setGenres={setGenres}
@@ -176,7 +175,7 @@ const Match = () => {
           rapidApiKey={rapidApiKey}
         />
       </Route>
-      <Route path={`${match.path}/result`}>
+      <Route path={`/match/${slug.name}/${slug.room}/result`}>
         <Result userMovies={userMovies} />
       </Route>
     </Switch>

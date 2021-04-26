@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const Result = ({ userMovies, rapidApiKey }) => {
-  let products = [];
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     if (userMovies.length !== 0) {
@@ -17,7 +17,7 @@ const Result = ({ userMovies, rapidApiKey }) => {
         .then((body) => {
           body.forEach((res) => {
             if (res) {
-              products.push(JSON.parse(res));
+              setProducts((prev) => prev.push(JSON.parse(res)));
             }
           });
           console.log("results from promise.all", products);
@@ -32,27 +32,26 @@ const Result = ({ userMovies, rapidApiKey }) => {
         <h1>No matches :(</h1>
       </div>
     );
-  } else if (products.length === 0) {
-    return <div className="bg-black h-16 w-16 animate-pulse"></div>;
   } else {
     return (
       <div className="m-auto mt-20 w-80 md:w-1/2">
         <h1>Here are your matches!</h1>
-        {products.map((item) => (
-          <div key={item.id}>
-            <h1>{item.title}</h1>
-            <img
-              src={`https://image.tmdb.org/t/p/w300/${item.poster_path}`}
-              alt="movie poster"
-            />
-            <p>{item.overview}</p>
-            <div>
-              <p>Released: {item.release_date}</p>
-              <p>Language: {item.original_language}</p>
-              <p>Rating: {item.vote_average}</p>
+        {products &&
+          products.map((item) => (
+            <div key={item.id}>
+              <h1>{item.title}</h1>
+              <img
+                src={`https://image.tmdb.org/t/p/w300/${item.poster_path}`}
+                alt="movie poster"
+              />
+              <p>{item.overview}</p>
+              <div>
+                <p>Released: {item.release_date}</p>
+                <p>Language: {item.original_language}</p>
+                <p>Rating: {item.vote_average}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     );
   }
