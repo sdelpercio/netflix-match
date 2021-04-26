@@ -33,8 +33,15 @@ const MatchMovies = ({
       .request(options)
       .then((res) => {
         setMovies([]);
-        console.log("movies response:", res);
-        setMovies(res.data.results);
+        const shuffledArray = res.data.results;
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledArray[i], shuffledArray[j]] = [
+            shuffledArray[j],
+            shuffledArray[i],
+          ];
+        }
+        setMovies(shuffledArray);
       })
       .catch((err) => {
         console.log(err);
