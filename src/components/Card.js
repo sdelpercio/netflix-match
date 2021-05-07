@@ -1,81 +1,80 @@
-import React from "react";
-import { Frame, useMotionValue, useTransform, useAnimation } from "framer";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useAnimation } from "framer";
 
-// Card component with destructured props
-const Card = ({
-  title,
-  poster_path,
-  overview,
-  release_date,
-  original_language,
-  vote_average,
-  id,
-  toggleMovies,
-}) => {
-  // To move the card as the user drags the cursor
-  const xMotionValue = useMotionValue(0);
-  const yMotionValue = useMotionValue(0);
+const Card = ({ children, onVote, ...props }) => {
+  const cardElem = useRef(null);
+  const x = useMotionValue(0);
+  const controls = useAnimation();
 
-  // To rotate the card as the card moves on drag
-  //   const rotateValue = useTransform(motionValue, [-200, 200], [-50, 50]);
+  const [vote, setVote] = useState(undefined);
+  const [constrained, setConstrained] = useState(true);
+  const [direction, setDirection] = useState();
+  const [velocity, setVelocity] = useState();
 
-  // To decrease opacity of the card when swipped
-  // on dragging card to left(-200) or right(200)
-  // opacity gradually changes to 0
-  // and when the card is in center opacity = 1
-  const opacityValue = useTransform(
-    xMotionValue,
-    [-200, -150, 0, 150, 200],
-    [0, 1, 1, 1, 0]
-  );
+  const getVote = (childNode, parentNode) => {
+    const childRect = childNode.getBoundingClientRect();
+    const parentRect = parentNode.getBoundingClientRect();
+    let result =
+      parentRect.left >= childRect.right
+        ? false
+        : parentRect.right <= childRect.left
+        ? true
+        : undefined;
+    return result;
+  };
 
-  // Framer animation hook
-  const animControls = useAnimation();
+  // determine direction of swipe based on velocity
+  const getDirection = () => {
+    return velocity >= 1 ? "right" : velocity <= -1 ? "left" : undefined;
+  };
+
+  const getTrajectory = () => {
+    setVelocity(x.getVelocity());
+    setDirection(getDirection());
+  };
+
+  const flyAway = (min) => {
+    const flyAwayDistance = (direction) => {
+      const parentWidth = cardElem.current.parentNode.getBoundingClientRect()
+        .width;
+      const childWidth = cardElem.current.getBoundingClientRect().width;
+      return direction === "left"
+        ? -parentWidth / 2 - childWidth / 2
+        : parentWidth / 2 + childWidth / 2;
+    };
+
+    if (direction && Math.abs(velocity) > min) {
+      setConstrained(false);
+      controls.start({ x: flyAwayDistance(direction) });
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribeX = x.onChange(() => {
+      const childNode = cardElem.current;
+      const parentNode = cardElem.current.parentNode;
+      const result = getVote(childNode, parentNode);
+      result !== undefined && onVote(result);
+    });
+
+    return () => unsubscribeX();
+  });
 
   return (
-    <div w="100px" h="200px">
-      <Frame
-        center
-        drag="true"
-        x={xMotionValue}
-        y={yMotionValue}
-        // rotate={rotateValue}
-        opacity={opacityValue}
-        dragConstraints={{ left: -1000, right: 1000 }}
-        // style={style}
-        onDragEnd={(event, info) => {
-          // If the card is dragged only upto 150 on x-axis
-          // bring it back to initial position
-          if (-150 <= info.point.x <= 150) {
-            animControls.start({ x: 0, y: 0 });
-          } else if (info.point.x > 150) {
-            // If card is dragged beyond 150
-            // make it disappear
-            console.log("info:", info);
-            toggleMovies(event, id);
-
-            // Making use of ternary operator
-            animControls.start({ x: info.point.x < 0 ? -200 : 200 });
-          } else {
-            console.log("remove movie");
-          }
-        }}
-      >
-        <div key={id}>
-          <h1>{title}</h1>
-          <img
-            src={`https://image.tmdb.org/t/p/w300/${poster_path}`}
-            alt="movie poster"
-          />
-          <p>{overview}</p>
-          <div>
-            <p>Released: {release_date}</p>
-            <p>Language: {original_language}</p>
-            <p>Rating: {vote_average}</p>
-          </div>
-        </div>
-      </Frame>
-    </div>
+    <motion.div
+      className="absolute"
+      animate={controls}
+      dragConstraints={constrained && { left: 0, right: 0, top: 0, bottom: 0 }}
+      dragElastic={1}
+      ref={cardElem}
+      style={{ x }}
+      onDrag={getTrajectory}
+      onDragEnd={() => flyAway(500)}
+      whileTap={{ scale: 1.1 }}
+      {...props}
+    >
+      {children}
+    </motion.div>
   );
 };
 export default Card;

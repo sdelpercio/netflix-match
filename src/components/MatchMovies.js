@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 // components
-import Card from "./Card.js";
+import Stack from "./Stack";
 
 const MatchMovies = ({
   movies,
@@ -56,34 +56,23 @@ const MatchMovies = ({
       {movies.length === 0 ? (
         <div className="bg-black h-16 w-16 animate-pulse"></div>
       ) : (
-        movies.map((item) => (
-          <Card
-            key={item.id}
-            title={item.title}
-            poster_path={item.poster_path}
-            overview={item.overview}
-            release_date={item.release_date}
-            original_language={item.original_language}
-            vote_average={item.vote_average}
-            id={item.id}
-            toggleMovies={toggleMovies}
-          />
-          // <div key={item.id}>
-          //   <h1>{item.title}</h1>
-          //   <img
-          //     src={`https://image.tmdb.org/t/p/w300/${item.poster_path}`}
-          //     alt="movie poster"
-          //     style={{ border: "2px solid black" }}
-          //     onClick={(e) => toggleMovies(e, item.id)}
-          //   />
-          //   <p>{item.overview}</p>
-          //   <div>
-          //     <p>Released: {item.release_date}</p>
-          //     <p>Language: {item.original_language}</p>
-          //     <p>Rating: {item.vote_average}</p>
-          //   </div>
-          // </div>
-        ))
+        <Stack onVote={(item, vote) => console.log(item.props, vote)}>
+          {movies.map((item) => (
+            <div>
+              <h1>{item.title}</h1>
+              <img
+                src={`https://image.tmdb.org/t/p/w200/${item.poster_path}`}
+                alt="movie poster"
+              />
+              <p>{item.overview}</p>
+              <div>
+                <p>Released: {item.release_date}</p>
+                <p>Language: {item.original_language}</p>
+                <p>Rating: {item.vote_average}</p>
+              </div>
+            </div>
+          ))}
+        </Stack>
       )}
       <button onClick={(e) => submitMovies(e)}>Continue</button>
     </div>

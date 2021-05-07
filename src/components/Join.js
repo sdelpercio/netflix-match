@@ -6,7 +6,7 @@ const Join = () => {
   const [room, setroom] = useState("");
 
   return (
-    <div className="m-auto mt-20 w-80 md:w-96">
+    <div className="m-auto mt-20 w-80 md:w-96 flex-grow">
       <div className="flex flex-col items-center justify-evenly w-full h-60 shadow-xl rounded-2xl">
         <h1 className="font-bold text-2xl">Join a room</h1>
         <input

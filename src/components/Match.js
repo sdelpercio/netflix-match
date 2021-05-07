@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Switch,
-  Route,
-  useHistory,
-  useRouteMatch,
-  useParams,
-} from "react-router-dom";
+import { Switch, Route, useHistory, useParams } from "react-router-dom";
 import io from "socket.io-client";
 import swal from "@sweetalert/with-react";
 // components
@@ -60,7 +54,6 @@ const Match = () => {
   //                           //
   // GENRE FUNCTIONS & SOCKETS //
   //                           //
-  // Toggle Genres
   const toggleGenre = (e, id) => {
     if (e.target.style.backgroundColor === "white") {
       e.target.style.backgroundColor = "black";
@@ -83,7 +76,7 @@ const Match = () => {
     }
     socket.emit("updateGenres", id);
   };
-  // Submit Genres
+
   const submitGenres = (e) => {
     e.preventDefault();
 
@@ -110,7 +103,6 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
-  // Toggle Movies
   const toggleMovies = (e, id) => {
     if (e.target.style.border === "2px solid black") {
       e.target.style.border = "2px solid green";
@@ -129,7 +121,6 @@ const Match = () => {
       socket.emit("removeMovies", id);
     }
   };
-  // Submit Movies
   const submitMovies = (e) => {
     e.preventDefault();
 
