@@ -10,7 +10,7 @@ function App() {
   let history = useHistory();
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-hidden">
       <header className="text-5xl md:text-8xl font-black flex justify-center">
         <span
           onClick={(e) => {

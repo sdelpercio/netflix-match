@@ -20,23 +20,25 @@ const Stack = ({ children, onVote, ...props }) => {
   };
 
   return (
-    <>
-      <div {...props}>
-        {stack.map((item, index) => {
-          let isTop = index === stack.length - 1;
-          return (
-            <Card
-              drag={isTop}
-              key={item.key || index}
-              onVote={(result) => handleVote(item, result)}
-              {...item.props}
-            >
-              {item}
-            </Card>
-          );
-        })}
-      </div>
-    </>
+    <div
+      className="relative flex justify-center align-center z-50 pt-12 md:pt-18"
+      style={{ minHeight: "32rem" }}
+      {...props}
+    >
+      {stack.map((item, index) => {
+        let isTop = index === stack.length - 1;
+        return (
+          <Card
+            drag={isTop}
+            key={item.key || index}
+            onVote={(result) => handleVote(item, result)}
+            {...item.props}
+          >
+            {item}
+          </Card>
+        );
+      })}
+    </div>
   );
 };
 export default Stack;

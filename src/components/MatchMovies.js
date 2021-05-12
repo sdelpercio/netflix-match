@@ -51,30 +51,34 @@ const MatchMovies = ({
   }, [rapidApiKey, setMovies, userGenres]);
 
   return (
-    <div>
+    <div className="m-auto text-center mt-20">
       <h1>Choose your Movies</h1>
       {movies.length === 0 ? (
         <div className="bg-black h-16 w-16 animate-pulse"></div>
       ) : (
-        <Stack onVote={(item, vote) => console.log(item.props, vote)}>
-          {movies.map((item) => (
-            <div>
-              <h1>{item.title}</h1>
-              <img
-                src={`https://image.tmdb.org/t/p/w200/${item.poster_path}`}
-                alt="movie poster"
-              />
-              <p>{item.overview}</p>
+        <>
+          <Stack onVote={(item, vote) => console.log(item.props, vote)}>
+            {movies.map((item) => (
               <div>
-                <p>Released: {item.release_date}</p>
-                <p>Language: {item.original_language}</p>
-                <p>Rating: {item.vote_average}</p>
+                <h1>{item.title}</h1>
+                <img
+                  src={`https://image.tmdb.org/t/p/w200/${item.poster_path}`}
+                  alt="movie poster"
+                  draggable="false"
+                  style={{ margin: "0 auto" }}
+                />
+                {/* <p>{item.overview}</p> */}
+                <div>
+                  <p>Released: {item.release_date}</p>
+                  <p>Language: {item.original_language}</p>
+                  <p>Rating: {item.vote_average}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </Stack>
+            ))}
+          </Stack>
+          <button onClick={(e) => submitMovies(e)}>Continue</button>
+        </>
       )}
-      <button onClick={(e) => submitMovies(e)}>Continue</button>
     </div>
   );
 };

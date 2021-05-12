@@ -5,11 +5,26 @@ const Card = ({ children, onVote, ...props }) => {
   const cardElem = useRef(null);
   const x = useMotionValue(0);
   const controls = useAnimation();
+  const rotations = [
+    "rotate-3",
+    "rotate-6",
+    "rotate-12",
+    "-rotate-3",
+    "-rotate-6",
+    "-rotate-12",
+  ];
 
   const [vote, setVote] = useState(undefined);
   const [constrained, setConstrained] = useState(true);
   const [direction, setDirection] = useState();
   const [velocity, setVelocity] = useState();
+
+  const generateClassNames = () => {
+    return (
+      "absolute bg-gray-200 rounded-2xl w-1/2 md:w-1/3 transform " +
+      rotations[Math.floor(Math.random() * rotations.length)]
+    );
+  };
 
   const getVote = (childNode, parentNode) => {
     const childRect = childNode.getBoundingClientRect();
@@ -62,7 +77,7 @@ const Card = ({ children, onVote, ...props }) => {
 
   return (
     <motion.div
-      className="absolute"
+      className={generateClassNames()}
       animate={controls}
       dragConstraints={constrained && { left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={1}
