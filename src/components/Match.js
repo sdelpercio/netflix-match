@@ -103,23 +103,18 @@ const Match = () => {
   //                           //
   // MOVIE FUNCTIONS & SOCKETS //
   //                           //
-  const toggleMovies = (e, id) => {
-    if (e.target.style.border === "2px solid black") {
-      e.target.style.border = "2px solid green";
-    } else {
-      e.target.style.border = "2px solid black";
-    }
-
-    const movieIndex = userMovies.indexOf(id);
-    if (movieIndex === -1) {
-      setUserMovies((prevState) => [...prevState, id]);
+  const toggleMovies = (id, vote) => {
+    if (vote === true) {
+      // setUserMovies((prevState) => [...prevState, id]);
+      console.log("added id:", id);
       socket.emit("addMovies", id);
-    } else {
-      setUserMovies((prevState) =>
-        prevState.filter((prev_id) => id !== prev_id)
-      );
-      socket.emit("removeMovies", id);
     }
+    // } else {
+    //   setUserMovies((prevState) =>
+    //     prevState.filter((prev_id) => id !== prev_id)
+    //   );
+    //   socket.emit("removeMovies", id);
+    // }
   };
   const submitMovies = (e) => {
     e.preventDefault();
@@ -139,7 +134,6 @@ const Match = () => {
   // Receive Movies After Submission
   useEffect(() => {
     socket.on("receiveMovies", (receivedMovies) => {
-      console.log("received movies:", receivedMovies);
       setUserMovies(receivedMovies);
       history.push(`/match/${slug.name}/${slug.room}/result`);
     });
@@ -167,7 +161,7 @@ const Match = () => {
         />
       </Route>
       <Route path={`/match/${slug.name}/${slug.room}/result`}>
-        <Result userMovies={userMovies} />
+        <Result userMovies={userMovies} rapidApiKey={rapidApiKey} />
       </Route>
     </Switch>
   );

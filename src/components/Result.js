@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Result = ({ userMovies, rapidApiKey }) => {
   const [products, setProducts] = useState([]);
 
+  // Retrieving Matched Movie Details
   useEffect(() => {
     if (userMovies.length !== 0) {
-      let requests = userMovies.map((id) => {
-        return new Promise((resolve, reject) => {
-          new Request(
-            `https://api.themoviedb.org/3/movie/${id}?api_key=${rapidApiKey}&language=en-US`,
-            { method: "GET" }
-          );
-        });
+      const promises = userMovies.map((id) => {
+        return axios.get(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=${rapidApiKey}&language=en-US`
+        );
       });
-      Promise.all(requests)
-        .then((body) => {
-          body.forEach((res) => {
-            if (res) {
-              setProducts((prev) => prev.push(JSON.parse(res)));
-            }
-          });
-          console.log("results from promise.all", products);
-        })
+      Promise.all(promises)
+        .then((res) => setProducts(res))
         .catch((err) => console.log(err));
     }
   }, [rapidApiKey, userMovies]);
@@ -38,17 +30,17 @@ const Result = ({ userMovies, rapidApiKey }) => {
         <h1>Here are your matches!</h1>
         {products &&
           products.map((item) => (
-            <div key={item.id}>
-              <h1>{item.title}</h1>
+            <div key={item.data.id}>
+              <h1>{item.data.title}</h1>
               <img
-                src={`https://image.tmdb.org/t/p/w300/${item.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w300/${item.data.poster_path}`}
                 alt="movie poster"
               />
-              <p>{item.overview}</p>
+              <p>{item.data.overview}</p>
               <div>
-                <p>Released: {item.release_date}</p>
-                <p>Language: {item.original_language}</p>
-                <p>Rating: {item.vote_average}</p>
+                <p>Released: {item.data.release_date}</p>
+                <p>Language: {item.data.original_language}</p>
+                <p>Rating: {item.data.vote_average}</p>
               </div>
             </div>
           ))}
