@@ -57,9 +57,9 @@ const MatchMovies = ({
         <div className="bg-black h-16 w-16 animate-pulse"></div>
       ) : (
         <>
-          <Stack onVote={(item, vote) => console.log(item.props, vote)}>
+          <Stack onVote={(item, vote) => toggleMovies(item.props.id, vote)}>
             {movies.map((item) => (
-              <div>
+              <div id={item.id}>
                 <h1>{item.title}</h1>
                 <img
                   src={`https://image.tmdb.org/t/p/w200/${item.poster_path}`}
